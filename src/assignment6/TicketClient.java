@@ -20,6 +20,7 @@ class ThreadedTicketClient implements Runnable
 
 	public void run()
 	{
+		// need while loop to keep requesting tickets until there are no more tickets left
 		System.out.flush();
 		try
 		{
