@@ -25,7 +25,6 @@ public class TicketServer
 
 class ThreadedTicketServer implements Runnable
 {
-
 	String hostname = "127.0.0.1";
 	String threadname = "X";
 	String testcase;

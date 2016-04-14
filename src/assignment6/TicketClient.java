@@ -35,7 +35,8 @@ class ThreadedTicketClient implements Runnable
 	}
 }
 
-public class TicketClient {
+public class TicketClient
+{
 	ThreadedTicketClient tc;
 	String result = "dummy";
 	String hostName = "";
