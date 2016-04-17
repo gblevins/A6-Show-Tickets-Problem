@@ -47,13 +47,16 @@ class ThreadedTicketServer implements Runnable
 
 	public void run()
 	{
-		while(concertHall.getSeatsNum() > 0)
+		while(true)
 		{
 			ServerSocket serverSocket;
 			try {
 				serverSocket = new ServerSocket(TicketServer.PORT);
 				Socket clientSocket = serverSocket.accept();
-				
+				// if (getBestSeat() == null) {
+				// 		system.err.println("Out of seats." + boxOfficeName + "is closing.");
+				//		break;
+				// }
 				// now one client is talking to the server 
 				// this is where we can find the best seat in the hall and 
 				// give that seat to the client that the server is talking to 
