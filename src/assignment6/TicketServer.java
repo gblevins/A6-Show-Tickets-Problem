@@ -14,13 +14,20 @@ public class TicketServer
 	// EE422C: no matter how many concurrent requests you get,
 	// do not have more than three servers running concurrently
 	final static int MAXPARALLELTHREADS = 3;
+	static int threadsStarted = 0;
 
 	public static void start(int portNumber) throws IOException
 	{
 		PORT = portNumber;
 		Runnable serverThread = new ThreadedTicketServer();
 		Thread t = new Thread(serverThread);
-		t.start();
+		threadsStarted += 1;
+		if (threadsStarted >= MAXPARALLELTHREADS) {
+			t.start();
+		}
+		else {
+			System.err.println("Attempt to initialize too many servers.");
+		}
 	}
 }
 
@@ -30,7 +37,7 @@ class ThreadedTicketServer implements Runnable
 	String threadname = "X";
 	String testcase;
 	TicketClient sc;
-	
+
 	static ConcertHall concertHall;
 
 	public void init()
@@ -40,13 +47,13 @@ class ThreadedTicketServer implements Runnable
 
 	public void run()
 	{
-		// TODO 422C // need a while loop to handle all of the clients that are waiting, WHILE YOU HAVE SEATS AVAILABLE
-		while(concertHall.getSeatsNum() != 0)
+		while(concertHall.getSeatsNum() > 0)
 		{
 			ServerSocket serverSocket;
 			try {
 				serverSocket = new ServerSocket(TicketServer.PORT);
 				Socket clientSocket = serverSocket.accept();
+				
 				// now one client is talking to the server 
 				// this is where we can find the best seat in the hall and 
 				// give that seat to the client that the server is talking to 
