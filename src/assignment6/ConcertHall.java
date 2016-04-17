@@ -8,7 +8,7 @@ public class ConcertHall
 	ArrayList<Seat> seats2;
 	ArrayList<Seat> seats3;
 	ArrayList<Seat> seats4;
-	
+
 	ConcertHall()
 	{
 		seats1 = new ArrayList<Seat>();

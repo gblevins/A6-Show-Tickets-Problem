@@ -51,7 +51,8 @@ public class TestTicketOffice {
 	}
 
 	@Test
-	public void twoConcurrentServerTest() {
+	public void twoConcurrentServerTest()
+	{
 		try {
 			TicketServer.start(16792);
 		} catch (Exception e) {
@@ -84,6 +85,15 @@ public class TestTicketOffice {
 			t3.join();
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public void withConcertHallTest()
+	{
+		try {
+			TicketServer.start(16792);
+		} catch (Exception e) {
+			fail();
 		}
 	}
 }
