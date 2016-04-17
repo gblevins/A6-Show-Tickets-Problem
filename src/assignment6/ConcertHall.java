@@ -63,4 +63,9 @@ public class ConcertHall
 			}
 		}
 	}
+	
+	public int getSeatsNum()
+	{
+		return seats1.size() + seats2.size() + seats3.size() + seats4.size();
+	}
 }

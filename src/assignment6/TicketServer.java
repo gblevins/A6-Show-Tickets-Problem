@@ -41,18 +41,21 @@ class ThreadedTicketServer implements Runnable
 	public void run()
 	{
 		// TODO 422C // need a while loop to handle all of the clients that are waiting, WHILE YOU HAVE SEATS AVAILABLE
-		ServerSocket serverSocket;
-		try {
-			serverSocket = new ServerSocket(TicketServer.PORT);
-			Socket clientSocket = serverSocket.accept();
-			// now one client is talking to the server 
-			// this is where we can find the best seat in the hall and 
-			// give that seat to the client that the server is talking to 
-			PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-			BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		while(concertHall.getSeatsNum() != 0)
+		{
+			ServerSocket serverSocket;
+			try {
+				serverSocket = new ServerSocket(TicketServer.PORT);
+				Socket clientSocket = serverSocket.accept();
+				// now one client is talking to the server 
+				// this is where we can find the best seat in the hall and 
+				// give that seat to the client that the server is talking to 
+				PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+				BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 }
