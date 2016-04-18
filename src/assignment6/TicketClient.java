@@ -35,9 +35,12 @@ class ThreadedTicketClient implements Runnable
 		System.out.flush();
 		try
 		{
+			System.out.println(threadname + " is attempting to connect to a server...");
 			Socket client = new Socket(hostname, TicketServer.PORT);
+			System.out.println(threadname + " just connected to " + client.getRemoteSocketAddress());
 			OutputStream outToServer = client.getOutputStream();
 			DataOutputStream out = new DataOutputStream(outToServer);
+			out.writeUTF(threadname + " says hello from " + client.getLocalSocketAddress());
 			InputStream inFromServer = client.getInputStream();
 			DataInputStream in = new DataInputStream(inFromServer);
 			System.out.println("Server says " + in.readUTF());
