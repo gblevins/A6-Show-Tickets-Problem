@@ -1,8 +1,8 @@
 package assignment6;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+//import java.io.BufferedReader;
+//import java.io.InputStreamReader;
+//import java.io.PrintWriter;
 import java.net.Socket;
 
 class ThreadedTicketClient implements Runnable
@@ -20,15 +20,15 @@ class ThreadedTicketClient implements Runnable
 
 	public void run()
 	{
-		// need while loop to keep requesting tickets until there are no more tickets left
 		System.out.flush();
 		try
 		{
+			// we create a socket and wait for it to be accepted, then the client buys the ticket
+			// and says so in requestTicket()
 			Socket echoSocket = new Socket(hostname, TicketServer.PORT);
-			// PrintWriter out =
-			new PrintWriter(echoSocket.getOutputStream(), true);
-			BufferedReader in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
-			BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+			// PrintWriter out = new PrintWriter(echoSocket.getOutputStream(), true);
+			// BufferedReader in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
+			// BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
 			echoSocket.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -60,7 +60,6 @@ public class TicketClient
 
 	void requestTicket()
 	{
-		// TODO thread.run()
 		tc.run();
 		System.out.println(hostName + "," + threadName + " got one ticket");
 	}

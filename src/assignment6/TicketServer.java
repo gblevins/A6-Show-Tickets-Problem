@@ -10,8 +10,8 @@ import java.net.Socket;
 public class TicketServer
 {
 	static int PORT = 2222;
-	
-	// EE422C: no matter how many concurrent requests you get,
+
+	// no matter how many concurrent requests,
 	// do not have more than three servers running concurrently
 	final static int MAXPARALLELTHREADS = 3;
 	static int threadsStarted = 0;
