@@ -1,12 +1,17 @@
 package assignment6;
 
+/*
+ * testing for the servers, clients, and concert hall data type
+ * starts up servers (booths) and puts clients (customers) in line
+ * to get tickets
+ */
+
 import static org.junit.Assert.fail;
 import org.junit.Test;
 
 public class TestTicketOffice {
-
-	public static int score = 0;
-
+	// this test ensures both that the ordering of the seats is correct and that the
+	// get best seat method is working properly
 	//@Test
 	public void concertHallTest()
 	{
@@ -24,6 +29,7 @@ public class TestTicketOffice {
 		System.out.println("Out of seats in the concert hall.");
 	}
 
+	// simply starts a server and a client and sees if one transaction can take place
 	//@Test
 	public void basicServerTest()
 	{
@@ -38,6 +44,7 @@ public class TestTicketOffice {
 		client.requestTicket();
 	}
 
+	// now tries for two transactions
 	//@Test
 	public void testServerCachedHardInstance()
 	{
@@ -54,6 +61,7 @@ public class TestTicketOffice {
 		client2.requestTicket();
 	}
 
+	// three clients now
 	//@Test
 	public void twoNonConcurrentServerTest()
 	{
@@ -70,6 +78,8 @@ public class TestTicketOffice {
 		c3.requestTicket();
 	}
 
+	// the clients are threaded to wait for each to finish before test finishes but threads
+	// execute seemingly randomly
 	@Test
 	public void twoConcurrentServerTest()
 	{
