@@ -23,19 +23,21 @@ public class TestTicketOffice {
 		
 		System.out.println("Out of seats in the concert hall.");
 	}
-	/*
-	// @Test
+
+	@Test
 	public void basicServerTest()
 	{
+		System.out.println("Starting basic server test.");
+
 		try {
-			TicketServer.start(16789);
+			TicketServer.start(16789, new String("Office A"));
 		} catch (Exception e) {
 			fail();
 		}
-		TicketClient client = new TicketClient();
+		TicketClient client = new TicketClient("Customer 1");
 		client.requestTicket();
 	}
-
+/*
 	@Test
 	public void testServerCachedHardInstance()
 	{

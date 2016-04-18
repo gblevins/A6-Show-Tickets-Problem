@@ -7,18 +7,13 @@ public class ConcertHall
 {
 	ArrayList<Seat> seats;
 
-	//ArrayList<Seat> seats1;
-	//ArrayList<Seat> seats2;
-	//ArrayList<Seat> seats3;
-	//ArrayList<Seat> seats4;
-
 	ConcertHall()
 	{
 		ArrayList<Seat> seats1 = new ArrayList<Seat>();
 		ArrayList<Seat> seats2 = new ArrayList<Seat>();
 		ArrayList<Seat> seats3 = new ArrayList<Seat>();
 		ArrayList<Seat> seats4 = new ArrayList<Seat>();
-		
+
 		int i, k;
 		for(i = 0; i < 13; i++)
 		{
@@ -74,7 +69,7 @@ public class ConcertHall
 		seats.addAll(seats4);
 	}
 
-	public Seat bestAvailableSeat()
+	public synchronized Seat bestAvailableSeat()
 	{
 		Seat bestSeat = null;
 		
@@ -99,6 +94,5 @@ public class ConcertHall
 	public int getSeatsNum()
 	{
 		return seats.size();
-		// return seats1.size() + seats2.size() + seats3.size() + seats4.size();
 	}
 }
