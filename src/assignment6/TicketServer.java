@@ -78,6 +78,10 @@ class ThreadedTicketServer implements Runnable
 		while(true)
 		{
 			try {
+				/*
+				 * MAKE THE COMMUNICATION MAKE MORE SENSE AND THEN BUILD THE TESTING QUEUE 
+				 * WITH 2 SERVERS AND SHOULD BE LIKE DONE AND TAKE TO NIRAJ TOMORROW
+				 */
 				System.out.println("Waiting for client on port " + serverSocket.getLocalPort() + "...");
 				Socket clientSocket = serverSocket.accept();
 				System.out.println(threadname + " just connected to " + clientSocket.getRemoteSocketAddress());
