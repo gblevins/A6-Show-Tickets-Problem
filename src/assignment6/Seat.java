@@ -2,14 +2,14 @@ package assignment6;
 
 public class Seat
 {
-	int seatNum;
-	String seatRow;
+	Integer seatNum;
+	char seatRow;
 	boolean reserved;
 
-	Seat(int newSeatNum, String newSeatRow)
+	Seat(int newSeatNum, char newSeatRow)
 	{
 		seatNum = newSeatNum;
-		seatRow = new String(newSeatRow);
+		seatRow = newSeatRow;
 		reserved = false;
 	}
 }

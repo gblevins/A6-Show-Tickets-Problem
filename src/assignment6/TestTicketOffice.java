@@ -7,6 +7,23 @@ public class TestTicketOffice {
 
 	public static int score = 0;
 
+	@Test
+	public void concertHallTest()
+	{
+		System.out.println("Starting Concert Hall Test. Printing from best ticket to worst ticket:");
+		
+		ConcertHall concertHall = new ConcertHall();
+		Seat bestSeat = concertHall.bestAvailableSeat();
+		
+		while (bestSeat != null)
+		{
+			System.out.println("Row: " + bestSeat.seatRow + " Number: " + bestSeat.seatNum.toString());
+			bestSeat = concertHall.bestAvailableSeat();
+		}
+		
+		System.out.println("Out of seats in the concert hall.");
+	}
+	/*
 	// @Test
 	public void basicServerTest()
 	{
@@ -85,14 +102,14 @@ public class TestTicketOffice {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
-	public void withConcertHallTest()
-	{
-		try {
-			TicketServer.start(16792);
-		} catch (Exception e) {
-			fail();
-		}
-	}
+	//public void withConcertHallTest()
+	//{
+	//	try {
+	//		TicketServer.start(16792);
+	//	} catch (Exception e) {
+	//		fail();
+	//	}
+	//}
 }
