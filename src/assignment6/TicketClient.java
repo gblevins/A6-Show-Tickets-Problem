@@ -8,19 +8,20 @@ import java.net.Socket;
 class ThreadedTicketClient implements Runnable
 {
 	String hostname = "127.0.0.1";
-	String threadname = "X";
-	TicketClient sc;
+	//String threadname = "X";
+	String threadname;
+	//TicketClient sc;
 
-	public ThreadedTicketClient(TicketClient sc, String hostname, String threadname)
-	{
-		this.sc = sc;
-		this.hostname = hostname;
-		this.threadname = threadname;
-	}
+//	public ThreadedTicketClient(TicketClient sc, String hostname, String threadname)
+//	{
+//		this.sc = sc;
+//		this.hostname = hostname;
+//		this.threadname = threadname;
+//	}
 	
-	public ThreadedTicketClient(String threadname)
+	public ThreadedTicketClient(String threadName)
 	{
-		this.threadname = threadname;
+		threadname = threadName;
 	}
 
 	public void run()
@@ -46,30 +47,36 @@ public class TicketClient
 {
 	ThreadedTicketClient tc;
 	//String result = "dummy";
-	String hostName = "";
-	String threadName = "";
-
-	TicketClient(String hostname, String threadname)
+	//String hostName = "";
+	//String threadName = "";
+	
+//	TicketClient(String hostname, String threadname)
+//	{
+//		//tc = new ThreadedTicketClient(this, hostname, threadname);
+//		tc = new ThreadedTicketClient(threadname);
+//		// okay idk look at this tomorrow
+//		hostName = hostname;
+//		threadName = threadname;
+//	}
+	
+	TicketClient(String threadName)
 	{
-		//tc = new ThreadedTicketClient(this, hostname, threadname);
-		tc = new ThreadedTicketClient(threadname);
-		// okay idk look at this tomorrow
-		hostName = hostname;
-		threadName = threadname;
+		tc = new ThreadedTicketClient(threadName);
 	}
 
-	TicketClient(String name) {
-		this("localhost", name);
-	}
+//	TicketClient(String name) {
+//		this("localhost", name);
+//	}
 
-	TicketClient() {
-		this("localhost", "unnamed client");
-	}
+//	TicketClient() {
+//		this("localhost", "unnamed client");
+//	}
 
 	void requestTicket()
 	{
 		tc.run();
-		System.out.println(hostName + "," + threadName + " got one ticket");
+		//System.out.println(hostName + "," + threadName + " got one ticket");
+		System.out.println(tc.threadname + " got one ticket");
 	}
 
 	void sleep()

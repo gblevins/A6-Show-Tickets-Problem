@@ -43,10 +43,6 @@ class ThreadedTicketServer implements Runnable
 	ThreadedTicketServer(String officeName)
 	{
 		threadname = officeName;
-	}
-
-	public void init()
-	{
 		concertHall = new ConcertHall();
 	}
 
@@ -72,6 +68,8 @@ class ThreadedTicketServer implements Runnable
 				
 				PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
 				out.write(threadname);
+				clientSocket.close();
+				serverSocket.close();
 				// BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 public class ConcertHall
 {
+	// the seats in the array list are ordered from best seat to worst seat
 	ArrayList<Seat> seats;
 
 	ConcertHall()
