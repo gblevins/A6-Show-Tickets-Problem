@@ -7,7 +7,7 @@ public class TestTicketOffice {
 
 	public static int score = 0;
 
-	@Test
+	//@Test
 	public void concertHallTest()
 	{
 		System.out.println("Starting Concert Hall Test. Printing from best ticket to worst ticket:");
@@ -24,10 +24,10 @@ public class TestTicketOffice {
 		System.out.println("Out of seats in the concert hall.");
 	}
 
-	@Test
+	//@Test
 	public void basicServerTest()
 	{
-		System.out.println("Starting basic server test.");
+		System.out.println("Starting basic server and request test.");
 
 		try {
 			TicketServer.start(16789, new String("Office A"));
@@ -37,32 +37,34 @@ public class TestTicketOffice {
 		TicketClient client = new TicketClient("Customer 1");
 		client.requestTicket();
 	}
-/*
-	@Test
+
+	//@Test
 	public void testServerCachedHardInstance()
 	{
+		System.out.println("Starting basic server test and double request test.");
+		
 		try {
-			TicketServer.start(16790);
+			TicketServer.start(16790, new String("Office A"));
 		} catch (Exception e) {
 			fail();
 		}
-		TicketClient client1 = new TicketClient("localhost", "c1");
-		TicketClient client2 = new TicketClient("localhost", "c2");
+		TicketClient client1 = new TicketClient("Customer 1");
+		TicketClient client2 = new TicketClient("Customer 2");
 		client1.requestTicket();
 		client2.requestTicket();
 	}
 
-	@Test
+	//@Test
 	public void twoNonConcurrentServerTest()
 	{
 		try {
-			TicketServer.start(16791);
+			TicketServer.start(16791, new String("Office A"));
 		} catch (Exception e) {
 			fail();
 		}
-		TicketClient c1 = new TicketClient("nonconc1");
-		TicketClient c2 = new TicketClient("nonconc2");
-		TicketClient c3 = new TicketClient("nonconc3");
+		TicketClient c1 = new TicketClient("Customer 1");
+		TicketClient c2 = new TicketClient("Customer 2");
+		TicketClient c3 = new TicketClient("Customer 3");
 		c1.requestTicket();
 		c2.requestTicket();
 		c3.requestTicket();
@@ -72,13 +74,13 @@ public class TestTicketOffice {
 	public void twoConcurrentServerTest()
 	{
 		try {
-			TicketServer.start(16792);
+			TicketServer.start(16792, new String("Office A"));
 		} catch (Exception e) {
 			fail();
 		}
-		final TicketClient c1 = new TicketClient("conc1");
-		final TicketClient c2 = new TicketClient("conc2");
-		final TicketClient c3 = new TicketClient("conc3");
+		final TicketClient c1 = new TicketClient("Customer 1");
+		final TicketClient c2 = new TicketClient("Customer 2");
+		final TicketClient c3 = new TicketClient("Customer 3");
 		Thread t1 = new Thread() {
 			public void run() {
 				c1.requestTicket();
@@ -104,14 +106,5 @@ public class TestTicketOffice {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}*/
-
-	//public void withConcertHallTest()
-	//{
-	//	try {
-	//		TicketServer.start(16792);
-	//	} catch (Exception e) {
-	//		fail();
-	//	}
-	//}
+	}
 }

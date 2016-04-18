@@ -1,9 +1,15 @@
 package assignment6;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+//import java.io.BufferedReader;
+import java.io.DataInputStream;
+//import java.io.InputStreamReader;
+import java.io.OutputStream;
+//import java.io.PrintWriter;
 //import java.io.PrintWriter;
 import java.net.Socket;
+import java.io.DataOutputStream;
+//import org.omg.CORBA.portable.OutputStream;
+import java.io.InputStream;
 
 class ThreadedTicketClient implements Runnable
 {
@@ -29,14 +35,20 @@ class ThreadedTicketClient implements Runnable
 		System.out.flush();
 		try
 		{
-			// we create a socket and wait for it to be accepted, then the client buys the ticket
-			// and says so in requestTicket()
-			Socket echoSocket = new Socket(hostname, TicketServer.PORT);
-			// PrintWriter out = new PrintWriter(echoSocket.getOutputStream(), true);
-			BufferedReader in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
-			System.out.println(threadname + " is buying a ticket from " + in.toString());
-			// BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-			echoSocket.close();
+			Socket client = new Socket(hostname, TicketServer.PORT);
+			OutputStream outToServer = client.getOutputStream();
+			DataOutputStream out = new DataOutputStream(outToServer);
+			InputStream inFromServer = client.getInputStream();
+			DataInputStream in = new DataInputStream(inFromServer);
+			System.out.println("Server says " + in.readUTF());
+			client.close();
+			
+			//PrintWriter out = new PrintWriter(echoSocket.getOutputStream(), true);
+			//BufferedReader in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
+			
+			//System.out.println(threadname + " is buying a ticket from " + in.readLine());
+			
+			//echoSocket.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

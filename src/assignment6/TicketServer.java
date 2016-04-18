@@ -1,9 +1,11 @@
 package assignment6;
 
 //import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 //import java.io.InputStreamReader;
-import java.io.PrintWriter;
+//import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -48,15 +50,26 @@ class ThreadedTicketServer implements Runnable
 
 	public void run()
 	{
+		ServerSocket serverSocket;
+		try {
+			serverSocket = new ServerSocket(TicketServer.PORT);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
+		
 		while(true)
 		{
-			ServerSocket serverSocket;
+			//ServerSocket serverSocket;
 			try {
-				serverSocket = new ServerSocket(TicketServer.PORT);
+				//serverSocket = new ServerSocket(TicketServer.PORT);
+				System.out.println("Waiting for client on port " + serverSocket.getLocalPort() + "...");
 				Socket clientSocket = serverSocket.accept();
-				// now one client is talking to the server 
-				// this is where we can find the best seat in the hall and 
-				// give that seat to the client that the server is talking to 
+				System.out.println(threadname + " just connected to " + clientSocket.getRemoteSocketAddress());
+				
+				DataInputStream in = new DataInputStream(clientSocket.getInputStream());
+				System.out.println(in.readUTF());
+				
 				Seat bestSeat = concertHall.bestAvailableSeat();
 				if (bestSeat == null) {
 					System.err.println("Out of seats. " + threadname + " is closing.");
@@ -66,15 +79,20 @@ class ThreadedTicketServer implements Runnable
 				System.out.println(threadname + " is selling a ticket.");
 				System.out.println("The best seat available is: Row " + bestSeat.seatRow + ", Chair " + bestSeat.seatNum.toString());
 				
-				PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-				out.write(threadname);
+				DataOutputStream out = new DataOutputStream(clientSocket.getOutputStream());
+				out.writeUTF(threadname + " says thank you for connecting to " + clientSocket.getLocalSocketAddress() + "\nGoodbye!");
 				clientSocket.close();
-				serverSocket.close();
-				// BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+				
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				System.err.println("Error.");
 				e.printStackTrace();
 			}
+		}
+		
+		try {
+			serverSocket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }
