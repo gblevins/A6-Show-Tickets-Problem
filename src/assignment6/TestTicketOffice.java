@@ -10,6 +10,9 @@ package assignment6;
 
 import static org.junit.Assert.fail;
 
+import java.awt.List;
+import java.util.ArrayList;
+import java.util.Iterator;
 //import java.util.AbstractQueue;
 //import java.util.ArrayList;
 import java.util.LinkedList;
@@ -167,7 +170,7 @@ public class TestTicketOffice {
 		}
 	}
 	
-	@Test
+	//@Test
 	public void twoServersTestWithQueue()
 	{
 		System.out.println("Starting test with two servers.");
@@ -193,6 +196,8 @@ public class TestTicketOffice {
 				queue.add(new TicketClient(customerName, 16793));
 			i++;
 		}
+		ArrayList<Thread> threads = new ArrayList<Thread>();
+		
 		while(TicketServer.hasTickets)
 		{
 			//queue.element().requestTicket();
@@ -200,14 +205,16 @@ public class TestTicketOffice {
 			if (queue.peek() != null)
 			{
 				TicketClient c = queue.remove();
-				ThreadedTicketClient t = c.tc;
-				t.run();
-				//Thread t = new Thread() {
-				//	public void run() {
-				//		c.requestTicket();
-				//	}
-				//};
-				//t.start();
+				//ThreadedTicketClient t = c.tc;
+				//t.run();
+				//Thread th = c.tc;
+				Thread t = new Thread() {
+					public void run() {
+						c.requestTicket();
+					}
+				};
+				threads.add(t);
+				t.start();
 				//try {
 				//	t.join();
 				//} catch (Exception e) {
@@ -233,6 +240,84 @@ public class TestTicketOffice {
 				}
 				totalCustomers += addCustomer;
 				customerCount += addCustomer;
+			}
+		}
+		// join the threads so that they finish
+		Iterator<Thread> it = threads.iterator();
+		while (it.hasNext())
+		{
+			Thread th = it.next();
+			try {
+				th.join();
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		System.err.println("All of the tickets have been sold. Exiting.");
+		System.exit(0);
+	}
+	
+	@Test
+	public void anotherTwoServersTestWithQueue()
+	{
+		System.out.println("Starting another test with two servers.");
+
+		try {
+			TicketServer.start(16792, new String("Office A"));
+			TicketServer.start(16793, new String("Office B"));
+		} catch (Exception e) {
+			fail();
+		}
+		//creates the queue and initializes variables
+		Queue<TicketClient> queue = new LinkedList<TicketClient>();
+		int i =0;
+		while(i < 800)
+		{	
+			String customerName = "Customer "+ ((Integer)(i+1)).toString();
+			if(i % 2 == 0)
+				queue.add(new TicketClient(customerName, 16792));
+			else
+				queue.add(new TicketClient(customerName, 16793));
+			i++;
+		}
+		ArrayList<Thread> threads = new ArrayList<Thread>();
+		
+		while(TicketServer.hasTickets)
+		{
+			//queue.element().requestTicket();
+			//queue.remove();
+			if (queue.peek() != null)
+			{
+				TicketClient c = queue.remove();
+				//ThreadedTicketClient t = c.tc;
+				//t.run();
+				//Thread th = c.tc;
+				Thread t = new Thread() {
+					public void run() {
+						c.requestTicket();
+					}
+				};
+				threads.add(t);
+				t.start();
+				//try {
+				//	t.join();
+				//} catch (Exception e) {
+				//	e.printStackTrace();
+				//}
+			}
+
+			//this makes sure that the queue never has less than 100 people
+			//if it does, then
+		}
+		// join the threads so that they finish
+		Iterator<Thread> it = threads.iterator();
+		while (it.hasNext())
+		{
+			Thread th = it.next();
+			try {
+				th.join();
+			} catch(Exception e) {
+				e.printStackTrace();
 			}
 		}
 		System.err.println("All of the tickets have been sold. Exiting.");

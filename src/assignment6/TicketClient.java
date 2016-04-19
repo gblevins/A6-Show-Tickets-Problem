@@ -6,7 +6,9 @@ package assignment6;
 
 import java.io.DataInputStream;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.Socket;
+import java.net.SocketException;
 import java.io.DataOutputStream;
 import java.io.InputStream;
 
@@ -36,6 +38,8 @@ class ThreadedTicketClient implements Runnable
 			 * if preferred
 			 */
 			//System.out.println(threadname + " is waiting for a booth to accept them.");
+			if (TicketServer.hasTickets == false)
+				return;
 			Socket client = new Socket(hostname, PORT);
 
 			// send the name of the customer to the office
@@ -54,9 +58,13 @@ class ThreadedTicketClient implements Runnable
 				client.close();
 			}
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		} catch (ConnectException e1) {
+			System.err.println("Connection closed. Out of tickets."); }
+			catch (SocketException e2) {
+				System.err.println("Connection closed. Out of tickets."); }
+			catch (Exception e3) {
+				e3.printStackTrace();
+			}
 	}
 }
 
