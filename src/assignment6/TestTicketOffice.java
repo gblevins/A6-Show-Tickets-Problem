@@ -199,7 +199,8 @@ public class TestTicketOffice {
 		}
 		while(TicketServer.hasTickets)
 		{
-			
+			queue.element().requestTicket();
+			queue.remove();
 			if(customerCount<100)
 			{
 				int addCustomer = ((int)(Math.random()*900))+100; 
