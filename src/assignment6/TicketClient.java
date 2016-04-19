@@ -30,19 +30,24 @@ class ThreadedTicketClient implements Runnable
 		System.out.flush();
 		try
 		{
-			System.out.println(threadname + " is waiting for a booth to accept them.");
+			/*
+			 * Many print statements and I/O connections have been commented out, 
+			 * they were used for testing and understanding, they can be uncommented
+			 * if preferred
+			 */
+			//System.out.println(threadname + " is waiting for a booth to accept them.");
 			Socket client = new Socket(hostname, PORT);
 			
 			// send the name of the customer to the office
-			OutputStream outToServer = client.getOutputStream();
-			DataOutputStream out = new DataOutputStream(outToServer);
-			out.writeUTF(threadname);
-			
+			//OutputStream outToServer = client.getOutputStream();
+			//DataOutputStream out = new DataOutputStream(outToServer);
+			//out.writeUTF(threadname);
+
 			InputStream inFromServer = client.getInputStream();
 			DataInputStream in = new DataInputStream(inFromServer);
 			System.out.println(threadname + " bought the seat " + in.readUTF() + ".");
 			client.close();
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
