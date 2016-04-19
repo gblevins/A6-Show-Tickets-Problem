@@ -257,7 +257,7 @@ public class TestTicketOffice {
 		System.exit(0);
 	}
 	
-	@Test
+	//@Test
 	public void anotherTwoServersTestWithQueue()
 	{
 		System.out.println("Starting another test with two servers.");
@@ -323,4 +323,80 @@ public class TestTicketOffice {
 		System.err.println("All of the tickets have been sold. Exiting.");
 		System.exit(0);
 	}
+	@Test
+	public void ThreeServersTestWithQueue()
+	{
+		System.out.println("Starting another test with three servers.");
+
+		try {
+			TicketServer.start(16792, new String("Office A"));
+			TicketServer.start(16793, new String("Office B"));
+			TicketServer.start(16794, new String("Office C"));
+		} catch (Exception e) {
+			fail();
+		}
+		//creates the queue and initializes variables
+		Queue<TicketClient> queue = new LinkedList<TicketClient>();
+		int i =0;
+		int totalCustomers = (int)(Math.random()*50+750);
+		while(i < totalCustomers )
+		{	
+			int rand = (int)(Math.random()*100);
+			String customerName = "Customer "+ ((Integer)(i+1)).toString();
+			if(rand< 33)
+			{
+				queue.add(new TicketClient(customerName, 16792));
+			}
+			else if(rand<67)
+			{
+				queue.add(new TicketClient(customerName, 16793));
+			}
+				
+			else
+				queue.add(new TicketClient(customerName, 16794));
+			i++;
+		}
+		ArrayList<Thread> threads = new ArrayList<Thread>();
+		
+		while(TicketServer.hasTickets)
+		{
+			//queue.element().requestTicket();
+			//queue.remove();
+			if (queue.peek() != null)
+			{
+				TicketClient c = queue.remove();
+				//ThreadedTicketClient t = c.tc;
+				//t.run();
+				//Thread th = c.tc;
+				Thread t = new Thread() {
+					public void run() {
+						c.requestTicket();
+					}
+				};
+				threads.add(t);
+				t.start();
+				//try {
+				//	t.join();
+				//} catch (Exception e) {
+				//	e.printStackTrace();
+				//}
+			}
+
+
+		}
+		// join the threads so that they finish
+		Iterator<Thread> it = threads.iterator();
+		while (it.hasNext())
+		{
+			Thread th = it.next();
+			try {
+				th.join();
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		System.out.println("All of the tickets have been sold. Exiting."+ThreadedTicketClient.buyCount);
+		System.exit(0);
+	}
+
 }

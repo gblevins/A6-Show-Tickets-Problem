@@ -14,6 +14,7 @@ import java.io.InputStream;
 
 class ThreadedTicketClient implements Runnable
 {
+	static int buyCount =0;
 	// name of the connection and client
 	String hostname = "127.0.0.1";
 	String threadname;
@@ -55,6 +56,7 @@ class ThreadedTicketClient implements Runnable
 			}
 			else {
 				System.out.println(input + ".");
+				buyCount++;
 				client.close();
 			}
 
