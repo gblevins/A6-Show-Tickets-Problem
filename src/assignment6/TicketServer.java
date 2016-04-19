@@ -88,8 +88,8 @@ class ThreadedTicketServer implements Runnable
 				Socket clientSocket = serverSocket.accept();
 				
 				// accept and print the name of the customer that is at the booth
-				//DataInputStream in = new DataInputStream(clientSocket.getInputStream());
-				//String customerName = new String(in.readUTF());
+				DataInputStream in = new DataInputStream(clientSocket.getInputStream());
+				String customerName = new String(in.readUTF());
 				//System.out.println(customerName + " is at " + threadname + ".");
 
 				Seat bestSeat = concertHall.bestAvailableSeat();
@@ -104,7 +104,7 @@ class ThreadedTicketServer implements Runnable
 
 				// give the customer the seat they will buy
 				DataOutputStream out = new DataOutputStream(clientSocket.getOutputStream());
-				out.writeUTF("Row " + bestSeat.seatRow + ", Chair " + bestSeat.seatNum.toString() + " from " + threadname);
+				out.writeUTF(customerName + " bought the seat Row " + bestSeat.seatRow + ", Chair " + bestSeat.seatNum.toString() + " from " + threadname);
 
 				clientSocket.close();
 

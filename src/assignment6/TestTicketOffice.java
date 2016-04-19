@@ -186,7 +186,7 @@ public class TestTicketOffice {
 		int i =0;
 		while(i<customerCount)
 		{	
-			String customerName = "Customer "+ ((Integer)(i)).toString();
+			String customerName = "Customer "+ ((Integer)(i+1)).toString();
 			if(i%2==0)
 			{
 				queue.add(new TicketClient(customerName, 16792));
@@ -195,19 +195,38 @@ public class TestTicketOffice {
 			{
 				queue.add(new TicketClient(customerName, 16793));
 			}
+			i++;
 
 		}
 		while(TicketServer.hasTickets)
 		{
-			queue.element().requestTicket();
-			queue.remove();
-			if(customerCount<100)
+			//queue.element().requestTicket();
+			//queue.remove();
+			
+			TicketClient c3 = queue.remove();
+			
+			Thread t3 = new Thread() {
+				public void run() {
+					c3.requestTicket();
+				}
+			};
+			t3.start();
+			try {
+				t3.join();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			//this makes sure that the queue never has less than 100 people
+			//if it does, then
+			if(customerCount<=100)
 			{
+				System.out.println("More customers added");
 				int addCustomer = ((int)(Math.random()*900))+100; 
 				int j = 0;
 				while(j<addCustomer)
 				{
-					String customerName = "Customer "+ ((Integer)(j+totalCustomers)).toString();
+					String customerName = "Customer "+ ((Integer)(j+1+totalCustomers)).toString();
 					if((j+totalCustomers)%2==0)
 					{
 						queue.add(new TicketClient(customerName, 16792));
@@ -216,6 +235,7 @@ public class TestTicketOffice {
 					{
 						queue.add(new TicketClient(customerName, 16793));
 					}
+					j++;
 				}
 				totalCustomers += addCustomer;
 				customerCount += addCustomer;

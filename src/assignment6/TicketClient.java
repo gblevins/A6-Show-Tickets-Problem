@@ -39,13 +39,13 @@ class ThreadedTicketClient implements Runnable
 			Socket client = new Socket(hostname, PORT);
 			
 			// send the name of the customer to the office
-			//OutputStream outToServer = client.getOutputStream();
-			//DataOutputStream out = new DataOutputStream(outToServer);
-			//out.writeUTF(threadname);
+			OutputStream outToServer = client.getOutputStream();
+			DataOutputStream out = new DataOutputStream(outToServer);
+			out.writeUTF(threadname);
 
 			InputStream inFromServer = client.getInputStream();
 			DataInputStream in = new DataInputStream(inFromServer);
-			System.out.println(threadname + " bought the seat " + in.readUTF() + ".");
+			System.out.println(in.readUTF() + ".");
 			client.close();
 
 		} catch (Exception e) {
