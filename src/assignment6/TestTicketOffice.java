@@ -9,6 +9,12 @@ package assignment6;
  */
 
 import static org.junit.Assert.fail;
+
+//import java.util.AbstractQueue;
+//import java.util.ArrayList;
+import java.util.LinkedList;
+//import java.util.PriorityQueue;
+import java.util.Queue;
 import org.junit.Test;
 
 public class TestTicketOffice {
@@ -27,7 +33,7 @@ public class TestTicketOffice {
 			System.out.println("Row: " + bestSeat.seatRow + " Number: " + bestSeat.seatNum.toString());
 			bestSeat = concertHall.bestAvailableSeat();
 		}
-		
+		System.out.println("The number of seats in the hall is: " + concertHall.seats.size());
 		System.out.println("Out of seats in the concert hall.");
 	}
 
@@ -174,23 +180,33 @@ public class TestTicketOffice {
 		}
 		
 		// ADD QUEUE
-		
-		final TicketClient c1 = new TicketClient("Customer 1", 16792);
-		final TicketClient c2 = new TicketClient("Customer 2", 16793);
-		final TicketClient c3 = new TicketClient("Customer 3", 16793);
+		Queue<TicketClient> queue = new LinkedList<TicketClient>();
+		queue.add(new TicketClient("Customer 1", 16792));
+		queue.add(new TicketClient("Customer 2", 16793));
+		queue.add(new TicketClient("Customer 3", 16793));
+
 		Thread t1 = new Thread() {
 			public void run() {
-				c1.requestTicket();
+				synchronized (queue){
+					queue.element().requestTicket();
+					queue.remove();
+				}
 			}
 		};
 		Thread t2 = new Thread() {
 			public void run() {
-				c2.requestTicket();
+				synchronized (queue) {
+					queue.element().requestTicket();
+					queue.remove();
+				}
 			}
 		};
 		Thread t3 = new Thread() {
 			public void run() {
-				c3.requestTicket();
+				synchronized (queue) {
+					queue.element().requestTicket();
+					queue.remove();
+				}
 			}
 		};
 		t1.start();
