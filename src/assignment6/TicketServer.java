@@ -54,11 +54,11 @@ class ThreadedTicketServer implements Runnable
 		PORT = portNumber;
 		threadname = officeName;
 		if (TicketServer.threadsStarted == 1) {
-			System.out.println("The first server is initializing the Concert Hall.");
+			//System.out.println("The first server is initializing the Concert Hall.");
 			concertHall = new ConcertHall();
 		}
 		else {
-			System.out.println("A server is being initialized but the Hall has already been initialized.");
+			//System.out.println("A server is being initialized but the Hall has already been initialized.");
 		}
 	}
 
@@ -94,8 +94,11 @@ class ThreadedTicketServer implements Runnable
 
 				Seat bestSeat = concertHall.bestAvailableSeat();
 				if (bestSeat == null) {
+					DataOutputStream out = new DataOutputStream(clientSocket.getOutputStream());
+					out.writeUTF("Sorry.");
 					System.err.println("Out of seats. " + threadname + " is closing.");
 					TicketServer.hasTickets = false;
+					clientSocket.close();
 					break;
 				}
 

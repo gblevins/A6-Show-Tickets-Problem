@@ -37,7 +37,7 @@ class ThreadedTicketClient implements Runnable
 			 */
 			//System.out.println(threadname + " is waiting for a booth to accept them.");
 			Socket client = new Socket(hostname, PORT);
-			
+
 			// send the name of the customer to the office
 			OutputStream outToServer = client.getOutputStream();
 			DataOutputStream out = new DataOutputStream(outToServer);
@@ -45,8 +45,14 @@ class ThreadedTicketClient implements Runnable
 
 			InputStream inFromServer = client.getInputStream();
 			DataInputStream in = new DataInputStream(inFromServer);
-			System.out.println(in.readUTF() + ".");
-			client.close();
+			String input = in.readUTF();
+			if (input.equals("Sorry.")){
+				client.close();
+			}
+			else {
+				System.out.println(input + ".");
+				client.close();
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
