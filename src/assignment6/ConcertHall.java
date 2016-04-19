@@ -88,23 +88,15 @@ public class ConcertHall
 	// synchronized so that multiple servers cannot try and sell the same ticket at the same time
 	public synchronized Seat bestAvailableSeat()
 	{
-		Seat bestSeat = null;
 		
-		Iterator<Seat> it = seats.iterator();
-		
-		bestSeat = it.next();
-		
-		while (it.hasNext())
+		for(Seat bestSeat:seats)
 		{
 			if (bestSeat.reserved == false)
 			{
 				bestSeat.reserved = true;
 				return bestSeat;
 			}
-			
-			bestSeat = it.next();
 		}
-		
-		return bestSeat = null;
+		return null;	
 	}
 }
