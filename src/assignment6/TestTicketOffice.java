@@ -40,7 +40,7 @@ public class TestTicketOffice {
 		} catch (Exception e) {
 			fail();
 		}
-		TicketClient client = new TicketClient("Customer 1");
+		TicketClient client = new TicketClient("Customer 1", 16792);
 		client.requestTicket();
 	}
 
@@ -55,8 +55,8 @@ public class TestTicketOffice {
 		} catch (Exception e) {
 			fail();
 		}
-		TicketClient client1 = new TicketClient("Customer 1");
-		TicketClient client2 = new TicketClient("Customer 2");
+		TicketClient client1 = new TicketClient("Customer 1", 16792);
+		TicketClient client2 = new TicketClient("Customer 2", 16792);
 		client1.requestTicket();
 		client2.requestTicket();
 	}
@@ -70,9 +70,9 @@ public class TestTicketOffice {
 		} catch (Exception e) {
 			fail();
 		}
-		TicketClient c1 = new TicketClient("Customer 1");
-		TicketClient c2 = new TicketClient("Customer 2");
-		TicketClient c3 = new TicketClient("Customer 3");
+		TicketClient c1 = new TicketClient("Customer 1", 16792);
+		TicketClient c2 = new TicketClient("Customer 2", 16792);
+		TicketClient c3 = new TicketClient("Customer 3", 16792);
 		c1.requestTicket();
 		c2.requestTicket();
 		c3.requestTicket();
@@ -80,7 +80,7 @@ public class TestTicketOffice {
 
 	// the clients are threaded to wait for each to finish before test finishes but threads
 	// execute seemingly randomly
-	@Test
+	//@Test
 	public void twoConcurrentServerTest()
 	{
 		try {
@@ -88,9 +88,50 @@ public class TestTicketOffice {
 		} catch (Exception e) {
 			fail();
 		}
-		final TicketClient c1 = new TicketClient("Customer 1");
-		final TicketClient c2 = new TicketClient("Customer 2");
-		final TicketClient c3 = new TicketClient("Customer 3");
+		final TicketClient c1 = new TicketClient("Customer 1", 16792);
+		final TicketClient c2 = new TicketClient("Customer 2", 16792);
+		final TicketClient c3 = new TicketClient("Customer 3", 16792);
+		Thread t1 = new Thread() {
+			public void run() {
+				c1.requestTicket();
+			}
+		};
+		Thread t2 = new Thread() {
+			public void run() {
+				c2.requestTicket();
+			}
+		};
+		Thread t3 = new Thread() {
+			public void run() {
+				c3.requestTicket();
+			}
+		};
+		t1.start();
+		t2.start();
+		t3.start();
+		try {
+			t1.join();
+			t2.join();
+			t3.join();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void twoServersTest()
+	{
+		System.out.println("Starting test with two servers.");
+
+		try {
+			TicketServer.start(16792, new String("Office A"));
+			TicketServer.start(16793, new String("Office B"));
+		} catch (Exception e) {
+			fail();
+		}
+		final TicketClient c1 = new TicketClient("Customer 1", 16792);
+		final TicketClient c2 = new TicketClient("Customer 2", 16793);
+		final TicketClient c3 = new TicketClient("Customer 3", 16793);
 		Thread t1 = new Thread() {
 			public void run() {
 				c1.requestTicket();

@@ -14,8 +14,6 @@ import java.net.Socket;
 
 public class TicketServer
 {
-	// the port number is used to request connections
-	static int PORT = 2222;
 	// no matter how many concurrent requests,
 	// do not have more than three servers running concurrently
 	final static int MAXPARALLELTHREADS = 3;
@@ -24,9 +22,8 @@ public class TicketServer
 	// constructs and starts thread, also makes sure that there aren't too many servers up
 	public static void start(int portNumber, String officeName) throws IOException
 	{
-		PORT = portNumber;
 		threadsStarted += 1;
-		Runnable serverThread = new ThreadedTicketServer(officeName);
+		Runnable serverThread = new ThreadedTicketServer(officeName, portNumber);
 		Thread t = new Thread(serverThread);
 		if (threadsStarted <= MAXPARALLELTHREADS) {
 			t.start();
@@ -43,14 +40,16 @@ class ThreadedTicketServer implements Runnable
 	// name of connection and server
 	String hostname = "127.0.0.1";
 	String threadname;
+	int PORT;
 
 	// the hall is static so that it is the same across servers
 	static ConcertHall concertHall;
 	
 	// constructors names the server and initializes the concert hall, if there is already
 	// a server up it does not reinitialize the hall
-	ThreadedTicketServer(String officeName)
+	ThreadedTicketServer(String officeName, int portNumber)
 	{
+		PORT = portNumber;
 		threadname = officeName;
 		if (TicketServer.threadsStarted == 1) {
 			System.out.println("The first server is initializing the Concert Hall.");
@@ -68,7 +67,7 @@ class ThreadedTicketServer implements Runnable
 		// start a server
 		ServerSocket serverSocket;
 		try {
-			serverSocket = new ServerSocket(TicketServer.PORT);
+			serverSocket = new ServerSocket(PORT);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return;
@@ -78,16 +77,13 @@ class ThreadedTicketServer implements Runnable
 		while(true)
 		{
 			try {
-				/*
-				 * MAKE THE COMMUNICATION MAKE MORE SENSE AND THEN BUILD THE TESTING QUEUE 
-				 * WITH 2 SERVERS AND SHOULD BE LIKE DONE AND TAKE TO NIRAJ TOMORROW
-				 */
-				System.out.println("Waiting for client on port " + serverSocket.getLocalPort() + "...");
+				System.out.println(threadname + " is ready for a customer.");
 				Socket clientSocket = serverSocket.accept();
-				System.out.println(threadname + " just connected to " + clientSocket.getRemoteSocketAddress());
 				
+				// accept and print the name of the customer that is at the booth
 				DataInputStream in = new DataInputStream(clientSocket.getInputStream());
-				System.out.println(in.readUTF());
+				String customerName = new String(in.readUTF());
+				System.out.println(customerName + " is at " + threadname + ".");
 
 				Seat bestSeat = concertHall.bestAvailableSeat();
 				if (bestSeat == null) {
@@ -95,13 +91,15 @@ class ThreadedTicketServer implements Runnable
 					break;
 				}
 
-				System.out.println(threadname + " is selling a ticket.");
-				System.out.println("The best seat available is: Row " + bestSeat.seatRow + ", Chair " + bestSeat.seatNum.toString());
-				
+				System.out.println("Hi " + customerName + ", the best seat available is: Row "
+									+ bestSeat.seatRow + ", Chair " + bestSeat.seatNum.toString());
+
+				// give the customer the seat they will buy
 				DataOutputStream out = new DataOutputStream(clientSocket.getOutputStream());
-				out.writeUTF(threadname + " says thank you for connecting to " + clientSocket.getLocalSocketAddress() + "\nGoodbye!");
+				out.writeUTF("Row " + bestSeat.seatRow + ", Chair " + bestSeat.seatNum.toString() + " from " + threadname);
+
 				clientSocket.close();
-				
+
 			} catch (IOException e) {
 				System.err.println("Error.");
 				e.printStackTrace();

@@ -15,10 +15,12 @@ class ThreadedTicketClient implements Runnable
 	// name of the connection and client
 	String hostname = "127.0.0.1";
 	String threadname;
+	int PORT;
 	
 	// constructor names the client
-	public ThreadedTicketClient(String threadName)
+	public ThreadedTicketClient(String threadName, int portNumber)
 	{
+		PORT = portNumber;
 		threadname = threadName;
 	}
 
@@ -28,15 +30,17 @@ class ThreadedTicketClient implements Runnable
 		System.out.flush();
 		try
 		{
-			System.out.println(threadname + " is attempting to connect to a server...");
-			Socket client = new Socket(hostname, TicketServer.PORT);
-			System.out.println(threadname + " just connected to " + client.getRemoteSocketAddress());
+			System.out.println(threadname + " is waiting for a booth to accept them.");
+			Socket client = new Socket(hostname, PORT);
+			
+			// send the name of the customer to the office
 			OutputStream outToServer = client.getOutputStream();
 			DataOutputStream out = new DataOutputStream(outToServer);
-			out.writeUTF(threadname + " says hello from " + client.getLocalSocketAddress());
+			out.writeUTF(threadname);
+			
 			InputStream inFromServer = client.getInputStream();
 			DataInputStream in = new DataInputStream(inFromServer);
-			System.out.println("Server says " + in.readUTF());
+			System.out.println(threadname + " bought the seat " + in.readUTF() + ".");
 			client.close();
 			
 		} catch (Exception e) {
@@ -50,16 +54,15 @@ public class TicketClient
 	ThreadedTicketClient tc;
 	
 	// constructor creates the client thread
-	TicketClient(String threadName)
+	TicketClient(String threadName, int portNumber)
 	{
-		tc = new ThreadedTicketClient(threadName);
+		tc = new ThreadedTicketClient(threadName, portNumber);
 	}
 
 	// the client requests to buy a ticket
 	void requestTicket()
 	{
 		tc.run();
-		System.out.println(tc.threadname + " got one ticket");
 	}
 
 	// sleep the client thread
