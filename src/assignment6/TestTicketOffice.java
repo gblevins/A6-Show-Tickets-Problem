@@ -178,46 +178,51 @@ public class TestTicketOffice {
 		} catch (Exception e) {
 			fail();
 		}
-		
-		// ADD QUEUE
+		//creates the queue and initializes variables
 		Queue<TicketClient> queue = new LinkedList<TicketClient>();
-		queue.add(new TicketClient("Customer 1", 16792));
-		queue.add(new TicketClient("Customer 2", 16793));
-		queue.add(new TicketClient("Customer 3", 16793));
+		int totalCustomers = 0;
+		int customerCount = ((int)(Math.random()*900))+100;
+		totalCustomers = customerCount;
+		int i =0;
+		while(i<customerCount)
+		{	
+			String customerName = "Customer "+ ((Integer)(i)).toString();
+			if(i%2==0)
+			{
+				queue.add(new TicketClient(customerName, 16792));
+			}
+			else
+			{
+				queue.add(new TicketClient(customerName, 16793));
+			}
 
-		Thread t1 = new Thread() {
-			public void run() {
-				synchronized (queue){
-					queue.element().requestTicket();
-					queue.remove();
-				}
-			}
-		};
-		Thread t2 = new Thread() {
-			public void run() {
-				synchronized (queue) {
-					queue.element().requestTicket();
-					queue.remove();
-				}
-			}
-		};
-		Thread t3 = new Thread() {
-			public void run() {
-				synchronized (queue) {
-					queue.element().requestTicket();
-					queue.remove();
-				}
-			}
-		};
-		t1.start();
-		t2.start();
-		t3.start();
-		try {
-			t1.join();
-			t2.join();
-			t3.join();
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
+		while(TicketServer.hasTickets)
+		{
+			
+			if(customerCount<100)
+			{
+				int addCustomer = ((int)(Math.random()*900))+100; 
+				int j = 0;
+				while(j<addCustomer)
+				{
+					String customerName = "Customer "+ ((Integer)(j+totalCustomers)).toString();
+					if((j+totalCustomers)%2==0)
+					{
+						queue.add(new TicketClient(customerName, 16792));
+					}
+					else
+					{
+						queue.add(new TicketClient(customerName, 16793));
+					}
+				}
+				totalCustomers += addCustomer;
+				customerCount += addCustomer;
+			}
+			
+			
+	
+		}
+
 	}
 }
