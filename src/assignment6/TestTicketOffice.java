@@ -120,7 +120,7 @@ public class TestTicketOffice {
 		}
 	}
 	
-	@Test
+	//@Test
 	public void twoServersTest()
 	{
 		System.out.println("Starting test with two servers.");
@@ -131,6 +131,50 @@ public class TestTicketOffice {
 		} catch (Exception e) {
 			fail();
 		}
+		final TicketClient c1 = new TicketClient("Customer 1", 16792);
+		final TicketClient c2 = new TicketClient("Customer 2", 16793);
+		final TicketClient c3 = new TicketClient("Customer 3", 16793);
+		Thread t1 = new Thread() {
+			public void run() {
+				c1.requestTicket();
+			}
+		};
+		Thread t2 = new Thread() {
+			public void run() {
+				c2.requestTicket();
+			}
+		};
+		Thread t3 = new Thread() {
+			public void run() {
+				c3.requestTicket();
+			}
+		};
+		t1.start();
+		t2.start();
+		t3.start();
+		try {
+			t1.join();
+			t2.join();
+			t3.join();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void twoServersTestWithQueue()
+	{
+		System.out.println("Starting test with two servers.");
+
+		try {
+			TicketServer.start(16792, new String("Office A"));
+			TicketServer.start(16793, new String("Office B"));
+		} catch (Exception e) {
+			fail();
+		}
+		
+		// ADD QUEUE
+		
 		final TicketClient c1 = new TicketClient("Customer 1", 16792);
 		final TicketClient c2 = new TicketClient("Customer 2", 16793);
 		final TicketClient c3 = new TicketClient("Customer 3", 16793);
