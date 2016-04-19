@@ -4,6 +4,8 @@ package assignment6;
  * testing for the servers, clients, and concert hall data type
  * starts up servers (booths) and puts clients (customers) in line
  * to get tickets
+ * 
+ * WARNING: always tell the servers and clients what there port numbers are
  */
 
 import static org.junit.Assert.fail;
