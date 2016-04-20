@@ -467,7 +467,8 @@ public class TestTicketOffice {
 			e.printStackTrace();
 		}
 
-		System.err.println("All of the tickets have been sold. Exiting." + ThreadedTicketClient.buyCount);
+		System.err.println("All of the tickets have been sold. Exiting.");
+		System.err.println("Tickets sold: " + ThreadedTicketClient.buyCount);
 		System.exit(0);
 	}
 }
