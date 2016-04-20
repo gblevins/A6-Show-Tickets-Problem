@@ -18,6 +18,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 //import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.concurrent.TimeUnit;
+
 import org.junit.Test;
 
 public class TestTicketOffice {
@@ -311,8 +313,14 @@ public class TestTicketOffice {
 		}
 		// join the threads so that they finish
 		Iterator<Thread> it = threads.iterator();
+		/*
 		while (it.hasNext())
 		{
+			System.out.println("here");
+			if(!TicketServer.hasTickets)
+			{
+				break;
+			}
 			Thread th = it.next();
 			try {
 				th.join();
@@ -320,7 +328,8 @@ public class TestTicketOffice {
 				e.printStackTrace();
 			}
 		}
-		System.err.println("All of the tickets have been sold. Exiting.");
+		*/
+		System.err.println("All of the tickets have been sold. Exiting."+ThreadedTicketClient.buyCount);
 		System.exit(0);
 	}
 	@Test
@@ -339,6 +348,7 @@ public class TestTicketOffice {
 		Queue<TicketClient> queue = new LinkedList<TicketClient>();
 		int i =0;
 		int totalCustomers = (int)(Math.random()*50+750);
+		totalCustomers = 731;
 		while(i < totalCustomers )
 		{	
 			int rand = (int)(Math.random()*100);
@@ -388,6 +398,10 @@ public class TestTicketOffice {
 		Iterator<Thread> it = threads.iterator();
 		while (it.hasNext())
 		{
+			if(TicketServer.hasTickets)
+			{
+				break;
+			}
 			Thread th = it.next();
 			try {
 				th.join();
@@ -395,7 +409,17 @@ public class TestTicketOffice {
 				e.printStackTrace();
 			}
 		}
-		System.out.println("All of the tickets have been sold. Exiting."+ThreadedTicketClient.buyCount);
+		
+		/*
+		try{
+			TimeUnit.SECONDS.sleep(1);
+		}
+		catch (Exception e){
+			e.printStackTrace();
+		}
+		*/
+		
+		System.err.println("All of the tickets have been sold. Exiting."+ThreadedTicketClient.buyCount);
 		System.exit(0);
 	}
 

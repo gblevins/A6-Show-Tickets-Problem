@@ -62,6 +62,7 @@ class ThreadedTicketClient implements Runnable
 
 		} catch (ConnectException e1) {
 			System.err.println("Connection closed. Out of tickets."); }
+		
 			catch (SocketException e2) {
 				System.err.println("Connection closed. Out of tickets."); }
 			catch (Exception e3) {
