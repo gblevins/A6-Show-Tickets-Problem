@@ -9,7 +9,6 @@ package assignment6;
  */
 
 import static org.junit.Assert.fail;
-
 import java.awt.List;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -19,7 +18,6 @@ import java.util.LinkedList;
 //import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
-
 import org.junit.Test;
 
 public class TestTicketOffice {
@@ -332,7 +330,8 @@ public class TestTicketOffice {
 		System.err.println("All of the tickets have been sold. Exiting."+ThreadedTicketClient.buyCount);
 		System.exit(0);
 	}
-	@Test
+
+	//@Test
 	public void ThreeServersTestWithQueue()
 	{
 		System.out.println("Starting another test with three servers.");
@@ -423,4 +422,52 @@ public class TestTicketOffice {
 		System.exit(0);
 	}
 
+	@Test
+	public void ThreeServersTest()
+	{
+		System.out.println("Starting test with three servers.");
+
+		try {
+			TicketServer.start(16792, new String("Office A"));
+			TicketServer.start(16793, new String("Office B"));
+			TicketServer.start(16794, new String("Office C"));
+		} catch (Exception e) {
+			fail();
+		}
+
+		// start three clients to buy tickets
+		TicketClient c1 = new TicketClient("Line 1", 16792);
+		TicketClient c2 = new TicketClient("Line 2", 16793);
+		TicketClient c3 = new TicketClient("Line 3", 16794);
+
+		Thread t1 = new Thread() {
+			public void run() {
+				c1.requestTicket();
+			}
+		};
+		Thread t2 = new Thread() {
+			public void run() {
+				c2.requestTicket();
+			}
+		};
+		Thread t3 = new Thread() {
+			public void run() {
+				c3.requestTicket();
+			}
+		};
+		t1.start();
+		t2.start();
+		t3.start();
+
+		try {
+			t1.join();
+			t2.join();
+			t3.join();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		System.err.println("All of the tickets have been sold. Exiting." + ThreadedTicketClient.buyCount);
+		System.exit(0);
+	}
 }

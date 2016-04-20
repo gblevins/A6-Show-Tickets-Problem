@@ -17,7 +17,11 @@ class ThreadedTicketClient implements Runnable
 	static int buyCount =0;
 	// name of the connection and client
 	String hostname = "127.0.0.1";
+	// the name of the line
 	String threadname;
+	// the number of the current customer in line
+	Integer customer = 1;
+	// port number of the server the the client is trying to connect to
 	int PORT;
 	
 	// constructor names the client
@@ -30,6 +34,8 @@ class ThreadedTicketClient implements Runnable
 	// where the client requests a ticket and waits for the server to respond
 	public void run()
 	{
+		while (TicketServer.hasTickets)
+		{
 		System.out.flush();
 		try
 		{
@@ -39,15 +45,13 @@ class ThreadedTicketClient implements Runnable
 			 * if preferred
 			 */
 			//System.out.println(threadname + " is waiting for a booth to accept them.");
-			if (TicketServer.hasTickets == false)
-				return;
 			Socket client = new Socket(hostname, PORT);
 
 			// send the name of the customer to the office
 			OutputStream outToServer = client.getOutputStream();
 			DataOutputStream out = new DataOutputStream(outToServer);
-			out.writeUTF(threadname);
-
+			out.writeUTF(threadname + " Customer " + customer.toString());
+			customer++;
 			InputStream inFromServer = client.getInputStream();
 			DataInputStream in = new DataInputStream(inFromServer);
 			String input = in.readUTF();
@@ -68,6 +72,7 @@ class ThreadedTicketClient implements Runnable
 			catch (Exception e3) {
 				e3.printStackTrace();
 			}
+		}
 	}
 }
 
