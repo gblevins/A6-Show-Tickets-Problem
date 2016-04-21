@@ -471,4 +471,46 @@ public class TestTicketOffice {
 		System.err.println("Tickets sold: " + ThreadedTicketClient.buyCount);
 		System.exit(0);
 	}
+	
+	//@Test
+	public void TwoServersTest()
+	{
+		System.out.println("Starting test with two servers.");
+
+		try {
+			TicketServer.start(16792, new String("Office A"));
+			TicketServer.start(16793, new String("Office B"));
+		} catch (Exception e) {
+			fail();
+		}
+
+		// start three clients to buy tickets
+		TicketClient c1 = new TicketClient("Line 1", 16792);
+		TicketClient c2 = new TicketClient("Line 2", 16793);
+
+		Thread t1 = new Thread() {
+			public void run() {
+				c1.requestTicket();
+			}
+		};
+		Thread t2 = new Thread() {
+			public void run() {
+				c2.requestTicket();
+			}
+		};
+
+		t1.start();
+		t2.start();
+
+		try {
+			t1.join();
+			t2.join();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		System.err.println("All of the tickets have been sold. Exiting.");
+		System.err.println("Tickets sold: " + ThreadedTicketClient.buyCount);
+		System.exit(0);
+	}	
 }
