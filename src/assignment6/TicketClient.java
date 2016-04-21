@@ -1,3 +1,9 @@
+/*
+ * Assignment 6: Threaded Tickets
+ * Names: Malvika Gupta and Garret Blevins
+ * UTEID: mg42972 and geb628
+ * Lab Section: Thursday 2 pm
+ */
 package assignment6;
 
 /*
@@ -14,6 +20,7 @@ import java.io.InputStream;
 
 class ThreadedTicketClient implements Runnable
 {
+	//counts how many actual tickets have been bought
 	static int buyCount =0;
 	// name of the connection and client
 	String hostname = "127.0.0.1";

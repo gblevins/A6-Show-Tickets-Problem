@@ -1,3 +1,9 @@
+/*
+ * Assignment 6: Threaded Tickets
+ * Names: Malvika Gupta and Garret Blevins
+ * UTEID: mg42972 and geb628
+ * Lab Section: Thursday 2 pm
+ */
 package assignment6;
 
 /*

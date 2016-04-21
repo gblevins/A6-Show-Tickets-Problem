@@ -1,3 +1,11 @@
+/*
+ * Assignment 6: Threaded Tickets
+ * Names: Malvika Gupta and Garret Blevins
+ * UTEID: mg42972 and geb628
+ * Lab Section: Thursday 2 pm
+ */
+
+
 package assignment6;
 
 /*
@@ -90,18 +98,24 @@ public class TestTicketOffice {
 	}
 
 	// the clients are threaded to wait for each to finish before test finishes but threads
-	// execute seemingly randomly
+	// execute seemingly randomly	
+	// this test runs with two servers (so two ticket offices)
 	//@Test
-	public void twoConcurrentServerTest()
+	public void TwoServersTest()
 	{
+		System.out.println("Starting test with two servers.");
+
 		try {
 			TicketServer.start(16792, new String("Office A"));
+			TicketServer.start(16793, new String("Office B"));
 		} catch (Exception e) {
 			fail();
 		}
-		final TicketClient c1 = new TicketClient("Customer 1", 16792);
-		final TicketClient c2 = new TicketClient("Customer 2", 16792);
-		final TicketClient c3 = new TicketClient("Customer 3", 16792);
+
+		// start three clients to buy tickets
+		TicketClient c1 = new TicketClient("Line 1", 16792);
+		TicketClient c2 = new TicketClient("Line 2", 16793);
+
 		Thread t1 = new Thread() {
 			public void run() {
 				c1.requestTicket();
@@ -112,316 +126,25 @@ public class TestTicketOffice {
 				c2.requestTicket();
 			}
 		};
-		Thread t3 = new Thread() {
-			public void run() {
-				c3.requestTicket();
-			}
-		};
+
 		t1.start();
 		t2.start();
-		t3.start();
+
 		try {
 			t1.join();
 			t2.join();
-			t3.join();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-	
-	//@Test
-	public void twoServersTest()
-	{
-		System.out.println("Starting test with two servers.");
 
-		try {
-			TicketServer.start(16792, new String("Office A"));
-			TicketServer.start(16793, new String("Office B"));
-		} catch (Exception e) {
-			fail();
-		}
-		final TicketClient c1 = new TicketClient("Customer 1", 16792);
-		final TicketClient c2 = new TicketClient("Customer 2", 16793);
-		final TicketClient c3 = new TicketClient("Customer 3", 16793);
-		Thread t1 = new Thread() {
-			public void run() {
-				c1.requestTicket();
-			}
-		};
-		Thread t2 = new Thread() {
-			public void run() {
-				c2.requestTicket();
-			}
-		};
-		Thread t3 = new Thread() {
-			public void run() {
-				c3.requestTicket();
-			}
-		};
-		t1.start();
-		t2.start();
-		t3.start();
-		try {
-			t1.join();
-			t2.join();
-			t3.join();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	//@Test
-	public void twoServersTestWithQueue()
-	{
-		System.out.println("Starting test with two servers.");
-
-		try {
-			TicketServer.start(16792, new String("Office A"));
-			TicketServer.start(16793, new String("Office B"));
-		} catch (Exception e) {
-			fail();
-		}
-		//creates the queue and initializes variables
-		Queue<TicketClient> queue = new LinkedList<TicketClient>();
-		int totalCustomers = 0;
-		int customerCount = ((int)(Math.random()*900))+100;
-		totalCustomers = customerCount;
-		int i =0;
-		while(i < customerCount)
-		{	
-			String customerName = "Customer "+ ((Integer)(i+1)).toString();
-			if(i % 2 == 0)
-				queue.add(new TicketClient(customerName, 16792));
-			else
-				queue.add(new TicketClient(customerName, 16793));
-			i++;
-		}
-		ArrayList<Thread> threads = new ArrayList<Thread>();
-		
-		while(TicketServer.hasTickets)
-		{
-			//queue.element().requestTicket();
-			//queue.remove();
-			if (queue.peek() != null)
-			{
-				TicketClient c = queue.remove();
-				//ThreadedTicketClient t = c.tc;
-				//t.run();
-				//Thread th = c.tc;
-				Thread t = new Thread() {
-					public void run() {
-						c.requestTicket();
-					}
-				};
-				threads.add(t);
-				t.start();
-				//try {
-				//	t.join();
-				//} catch (Exception e) {
-				//	e.printStackTrace();
-				//}
-			}
-
-			//this makes sure that the queue never has less than 100 people
-			//if it does, then
-			if(customerCount <= 100)
-			{
-				System.out.println("More customers added");
-				int addCustomer = ((int)(Math.random()*900))+100; 
-				int j = 0;
-				while(j < addCustomer)
-				{
-					String customerName = "Customer "+ ((Integer)(j+1+totalCustomers)).toString();
-					if((j+totalCustomers)%2==0)
-						queue.add(new TicketClient(customerName, 16792));
-					else
-						queue.add(new TicketClient(customerName, 16793));
-					j++;
-				}
-				totalCustomers += addCustomer;
-				customerCount += addCustomer;
-			}
-		}
-		// join the threads so that they finish
-		Iterator<Thread> it = threads.iterator();
-		while (it.hasNext())
-		{
-			Thread th = it.next();
-			try {
-				th.join();
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
-		}
 		System.err.println("All of the tickets have been sold. Exiting.");
+		System.err.println("Tickets sold: " + ThreadedTicketClient.buyCount);
 		System.exit(0);
-	}
-	
-	//@Test
-	public void anotherTwoServersTestWithQueue()
-	{
-		System.out.println("Starting another test with two servers.");
+	}	
 
-		try {
-			TicketServer.start(16792, new String("Office A"));
-			TicketServer.start(16793, new String("Office B"));
-		} catch (Exception e) {
-			fail();
-		}
-		//creates the queue and initializes variables
-		Queue<TicketClient> queue = new LinkedList<TicketClient>();
-		int i =0;
-		while(i < 800)
-		{	
-			String customerName = "Customer "+ ((Integer)(i+1)).toString();
-			if(i % 2 == 0)
-				queue.add(new TicketClient(customerName, 16792));
-			else
-				queue.add(new TicketClient(customerName, 16793));
-			i++;
-		}
-		ArrayList<Thread> threads = new ArrayList<Thread>();
-		
-		while(TicketServer.hasTickets)
-		{
-			//queue.element().requestTicket();
-			//queue.remove();
-			if (queue.peek() != null)
-			{
-				TicketClient c = queue.remove();
-				//ThreadedTicketClient t = c.tc;
-				//t.run();
-				//Thread th = c.tc;
-				Thread t = new Thread() {
-					public void run() {
-						c.requestTicket();
-					}
-				};
-				threads.add(t);
-				t.start();
-				//try {
-				//	t.join();
-				//} catch (Exception e) {
-				//	e.printStackTrace();
-				//}
-			}
-
-			//this makes sure that the queue never has less than 100 people
-			//if it does, then
-		}
-		// join the threads so that they finish
-		Iterator<Thread> it = threads.iterator();
-		/*
-		while (it.hasNext())
-		{
-			System.out.println("here");
-			if(!TicketServer.hasTickets)
-			{
-				break;
-			}
-			Thread th = it.next();
-			try {
-				th.join();
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
-		}
-		*/
-		System.err.println("All of the tickets have been sold. Exiting."+ThreadedTicketClient.buyCount);
-		System.exit(0);
-	}
-
-	//@Test
-	public void ThreeServersTestWithQueue()
-	{
-		System.out.println("Starting another test with three servers.");
-
-		try {
-			TicketServer.start(16792, new String("Office A"));
-			TicketServer.start(16793, new String("Office B"));
-			TicketServer.start(16794, new String("Office C"));
-		} catch (Exception e) {
-			fail();
-		}
-		//creates the queue and initializes variables
-		Queue<TicketClient> queue = new LinkedList<TicketClient>();
-		int i =0;
-		int totalCustomers = (int)(Math.random()*50+750);
-		totalCustomers = 731;
-		while(i < totalCustomers )
-		{	
-			int rand = (int)(Math.random()*100);
-			String customerName = "Customer "+ ((Integer)(i+1)).toString();
-			if(rand< 33)
-			{
-				queue.add(new TicketClient(customerName, 16792));
-			}
-			else if(rand<67)
-			{
-				queue.add(new TicketClient(customerName, 16793));
-			}
-				
-			else
-				queue.add(new TicketClient(customerName, 16794));
-			i++;
-		}
-		ArrayList<Thread> threads = new ArrayList<Thread>();
-		
-		while(TicketServer.hasTickets)
-		{
-			//queue.element().requestTicket();
-			//queue.remove();
-			if (queue.peek() != null)
-			{
-				TicketClient c = queue.remove();
-				//ThreadedTicketClient t = c.tc;
-				//t.run();
-				//Thread th = c.tc;
-				Thread t = new Thread() {
-					public void run() {
-						c.requestTicket();
-					}
-				};
-				threads.add(t);
-				t.start();
-				//try {
-				//	t.join();
-				//} catch (Exception e) {
-				//	e.printStackTrace();
-				//}
-			}
-
-
-		}
-		// join the threads so that they finish
-		Iterator<Thread> it = threads.iterator();
-		while (it.hasNext())
-		{
-			if(TicketServer.hasTickets)
-			{
-				break;
-			}
-			Thread th = it.next();
-			try {
-				th.join();
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
-		}
-		
-		/*
-		try{
-			TimeUnit.SECONDS.sleep(1);
-		}
-		catch (Exception e){
-			e.printStackTrace();
-		}
-		*/
-		
-		System.err.println("All of the tickets have been sold. Exiting."+ThreadedTicketClient.buyCount);
-		System.exit(0);
-	}
-
+	// the clients are also threaded to wait for each to finish before test finishes but threads
+	// execute seemingly randomly	
+	// this test runs with three servers (so three ticket offices)
 	@Test
 	public void ThreeServersTest()
 	{
@@ -471,46 +194,4 @@ public class TestTicketOffice {
 		System.err.println("Tickets sold: " + ThreadedTicketClient.buyCount);
 		System.exit(0);
 	}
-	
-	//@Test
-	public void TwoServersTest()
-	{
-		System.out.println("Starting test with two servers.");
-
-		try {
-			TicketServer.start(16792, new String("Office A"));
-			TicketServer.start(16793, new String("Office B"));
-		} catch (Exception e) {
-			fail();
-		}
-
-		// start three clients to buy tickets
-		TicketClient c1 = new TicketClient("Line 1", 16792);
-		TicketClient c2 = new TicketClient("Line 2", 16793);
-
-		Thread t1 = new Thread() {
-			public void run() {
-				c1.requestTicket();
-			}
-		};
-		Thread t2 = new Thread() {
-			public void run() {
-				c2.requestTicket();
-			}
-		};
-
-		t1.start();
-		t2.start();
-
-		try {
-			t1.join();
-			t2.join();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		System.err.println("All of the tickets have been sold. Exiting.");
-		System.err.println("Tickets sold: " + ThreadedTicketClient.buyCount);
-		System.exit(0);
-	}	
 }
